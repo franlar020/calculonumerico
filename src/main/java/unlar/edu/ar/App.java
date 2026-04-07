@@ -15,7 +15,7 @@ public class App {
         System.out.println("->. Multiplicación: Usar siempre '*' (Ej: 3*x)");
         System.out.println("->. Potencia: Usar '^' (Ej: x^2)");
         System.out.println("->. Seno: Usar 'sin(x)' o 'sen(x)'");
-        System.out.println("->. Logaritmo Natural: Usar 'log(x)'");
+        System.out.println("->. Logaritmo Natural: Usar 'log(x)', Logaritmo Base 10: 'log10(x)'");
         System.out.println("->. Constante e: Usar 'e' (Ej: e^x)");
         System.out.println("->. Paréntesis: Usar para agrupar (Ej: (x+2)/(x-1))");
         System.out.println("----------------------------------------");
