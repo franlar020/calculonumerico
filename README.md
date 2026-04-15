@@ -35,6 +35,19 @@ Para que el motor de expresiones reconozca las funciones, debés seguir estas re
 | $5x^3 + x^2 - x + 2$ | `5*x^3 + x^2 - x + 2` |
 | $e^{2x} - 7$ | `e^(2*x) - 7` |
 
+## 📍 Formato de Ingreso del Error ($E$)
+Es fundamental ingresar el error en **formato decimal estándar** para evitar fallos en la lógica de parada del programa.
+
+* **✅ CORRECTO:** `0.003`, `0.0001`, `0.05`
+* **❌ EVITAR:** No usar notación científica como `3x10^-3` o `1e-4`.
+
+### Tabla de Referencia para Errores
+| Valor Teórico | Cómo ingresarlo en el programa |
+| :--- | :--- |
+| $3 \times 10^{-3}$ | `0.003` |
+| $1 \times 10^{-4}$ | `0.0001` |
+| $5 \times 10^{-2}$ | `0.05` |
+
 ---
 
 ## 📋 Tips de la Cátedra aplicados
