@@ -44,27 +44,40 @@ public class App {
     }
 
     private static void imprimirTabla(double a, double b, double tol, int op, Metodos calc, Funcion f) {
-        System.out.printf("\n%-3s | %-7s | %-7s | %-7s | %-8s | %-8s | %-9s | %-8s\n", 
-                          "n", "An", "Bn", "Xn", "F(a)", "F(x)", "E(Xn-Xn1)", "Ern%");
+    // 1. Agregamos la columna de control de signo F(a)*F(x)
+    System.out.printf("\n%-3s | %-7s | %-7s | %-7s | %-8s | %-8s | %-8s | %-12s | %-9s | %-7s\n", 
+                      "n", "An", "Bn", "Xn", "F(a)", "F(b)", "F(x)", "F(a)*F(x)", "E(Xn-Xn1)", "Ern%");
+    System.out.println("-------------------------------------------------------------------------------------------------------");
+
+    double xAnt = 0;
+    for (int n = 0; n <= 50; n++) { 
+        double xn = calc.calcularXn(a, b, op, f);
+        double fa = f.evaluar(a);
+        double fb = f.evaluar(b);
+        double fx = f.evaluar(xn);
+        double productoSignos = fa * fx; // Columna de control para Bolzano
         
-        double xAnt = 0;
-        for (int n = 1; n <= 50; n++) {
-            double xn = calc.calcularXn(a, b, op, f);
-            double fx = f.evaluar(xn);
-            double err = (n == 1) ? 0 : Math.abs(xn - xAnt);
-            double eRel = (n == 1) ? 0 : (err / xn) * 100;
+        // El error en n=0 va en blanco según TIPS de la cátedra
+        double err = (n == 0) ? 0 : Math.abs(xn - xAnt);
+        double eRel = (n == 0) ? 0 : Math.abs((err / xn) * 100);
 
-            // Formato de 4 decimales
-            System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-8.4f | %-8.4f | %-9.4f | %-7.2f%%\n", 
-                              n, a, b, xn, f.evaluar(a), fx, err, eRel);
+        // 2. Mostramos los valores con 4 decimales
+        System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-8.4f | %-8.4f | %-8.4f | %-12.4f | %-9.4f | %-7.2f%%\n", 
+                          n, a, b, xn, fa, fb, fx, productoSignos, err, eRel);
 
-            if (n > 1 && err < tol) {
-                System.out.println("\nRaiz aproximada encontrada: " + xn);
-                break;
-            }
+        // Condición de parada: trabajar siempre con 4 decimales
+        if (n > 0 && err < tol) {
+            System.out.println("\nRaíz aproximada encontrada: " + String.format("%.4f", xn));
+            break;
+        }
 
-            if (f.evaluar(a) * fx > 0) a = xn; else b = xn;
-            xAnt = xn;
+        // Lógica de reemplazo basada en el producto de signos (Bolzano)
+        if (productoSignos > 0) {
+            a = xn;
+        } else {
+            b = xn;
+        }
+        xAnt = xn;
         }
     }
 }
