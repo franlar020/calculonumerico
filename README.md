@@ -1,48 +1,56 @@
-# 🧮 Proyecto: Cálculo Numérico - UNLaR
+# 🚀 Proyecto: Cálculo Numérico - UNLaR
 
-Este proyecto fue desarrollado para la cátedra de **Cálculo Numérico** (Sede Capital - Ing. Cobresí). El objetivo es proporcionar una herramienta interactiva en Java para la aproximación de raíces en ecuaciones no lineales utilizando **Métodos Cerrados**.
+Este proyecto fue desarrollado para la cátedra de **Cálculo Numérico** (Sede Capital - Ing. Cobresí). Proporciona una herramienta interactiva en Java para la aproximación de raíces en ecuaciones no lineales utilizando métodos cerrados y abiertos.
 
-## 🚀 Funcionalidades
-El programa permite resolver ecuaciones mediante:
-* **Método de la Bisección:** Divide el intervalo a la mitad sucesivamente.
-* **Método de la Regla Falsa:** Utiliza interpolación lineal para converger a la raíz.
+## 🛠️ Funcionalidades
+El programa se ejecuta a través de la **consola (terminal)** y permite resolver ecuaciones mediante:
 
-El sistema genera una tabla detallada que incluye $n$, $A_n$, $B_n$, $X_n$, $F(a)$, $F(x)$, el error absoluto ($E$) 
-y el error relativo porcentual.
+* **Métodos Cerrados:**
+    * **Bisección:** Divide el intervalo a la mitad sucesivamente.
+    * **Regla Falsa:** Utiliza interpolación lineal para converger a la raíz.
+* **Métodos Abiertos:**
+    * **Punto Fijo:** Requiere ingresar la función despejada $g(x)$.
+    * **Newton-Raphson:** ¡Ahora con **Derivada Automática**! No hace falta que ingreses $f'(x)$.
+    * **Secante:** Utiliza dos puntos iniciales sin requerir derivadas.
+
+El sistema genera tablas detalladas que incluyen $n$, $X_n$, $F(x)$, errores absolutos ($E$) y errores relativos porcentuales ($Er\%$).
 
 ---
 
-## ⌨️ Guía de Escritura de Funciones
-Para que el motor de expresiones reconozca las funciones, debés seguir estas reglas de sintaxis:
+## 💻 Ejecución en Consola
+Para correr el programa en Visual Studio Code o cualquier terminal:
+
+1. Asegurate de tener instalada la dependencia **exp4j** en tu `pom.xml`.
+2. Compilá el proyecto.
+3. Ejecutá la clase `App.java`.
+4. **Importante:** Al ingresar números decimales, utilizá el **punto (.)** (ejemplo: `0.0005`), aunque el programa cuenta con un autocrrector para comas (`,`).
+
+---
+
+## 📝 Guía de Escritura de Funciones
+Para que el motor reconozca las ecuaciones, seguí estas reglas de sintaxis:
 
 ### 1. Operaciones Básicas
-* **Multiplicación:** Usar siempre el asterisco `*`. (Ejemplo: `3*x` en lugar de `3x`).
-* **Potencia:** Usar el símbolo `^`. (Ejemplo: `x^2` para $x$ al cuadrado).
-* **División:** Usar `/` y agrupar con paréntesis si es necesario. (Ejemplo: `(x+1)/(x-1)`).
+* **Multiplicación:** Usar siempre `*` (Ejemplo: `3*x`).
+* **Potencia:** Usar `^` (Ejemplo: `x^2`).
+* **División:** Usar `/` y paréntesis para agrupar (Ejemplo: `(x+2)/(x-1)`).
 
 ### 2. Funciones Especiales
-* **Seno:** Escribir `sin(x)` o `sen(x)`. El programa opera siempre en **modo radián**.
+* **Seno:** Escribir `sen(x)` o `sin(x)`. El programa opera siempre en **modo radián**.
 * **Coseno:** Escribir `cos(x)`.
 * **Logaritmo Natural ($\ln$):** Escribir `log(x)`.
 * **Logaritmo Base 10:** Escribir `log10(x)`.
-* **Número de Euler ($e$):** Escribir `e^x` para funciones exponenciales.
+* **Número de Euler ($e$):** Escribir `e^x`.
 
-### 3. Ejemplos de entrada
-| Función Matemática | Cómo escribirla en el programa |
-| :--- | :--- |
-| $x^3 - \text{sen}(x) - 3$ | `x^3 - sin(x) - 3` |
-| $\cos(x) - 3x$ | `cos(x) - 3*x` |
-| $5x^3 + x^2 - x + 2$ | `5*x^3 + x^2 - x + 2` |
-| $e^{2x} - 7$ | `e^(2*x) - 7` |
+---
 
 ## 📍 Formato de Ingreso del Error ($E$)
-Es fundamental ingresar el error en **formato decimal estándar** para evitar fallos en la lógica de parada del programa.
+Es fundamental ingresar el error en **formato decimal estándar** para evitar fallos:
 
-* **✅ CORRECTO:** `0.003`, `0.0001`, `0.05`
-* **❌ EVITAR:** No usar notación científica como `3x10^-3` o `1e-4`.
+* ✅ **CORRECTO:** `0.003`, `0.0001`, `0.05`
+* ❌ **EVITAR:** Notación científica como `3x10^-3` o `1e-4`.
 
-### Tabla de Referencia para Errores
-| Valor Teórico | Cómo ingresarlo en el programa |
+| Valor Teórico | Ingreso en el programa |
 | :--- | :--- |
 | $3 \times 10^{-3}$ | `0.003` |
 | $1 \times 10^{-4}$ | `0.0001` |
@@ -50,11 +58,11 @@ Es fundamental ingresar el error en **formato decimal estándar** para evitar fa
 
 ---
 
-## 📋 Tips de la Cátedra aplicados
-* **Precisión:** El programa está configurado para mostrar **4 decimales** en todos los cálculos de la tabla.
-* **Condición de Parada:** El método se detiene cuando el error absoluto $|X_n - X_{n-1}|$ es menor a la tolerancia ingresada.
-* **Teorema de Bolzano:** Asegurarse de que el intervalo $[a, b]$ cumpla que $F(a) \cdot F(b) < 0$ para garantizar la existencia de la raíz.
-* **Cifras Significativas:** Una vez obtenida la raíz aproximada, aplicar la técnica de la línea vertical sobre el error para determinar la precisión real antes del redondeo final.
+## 💡 Tips de la Cátedra Aplicados
+* **Precisión:** El programa muestra **4 decimales** en todos los cálculos, tal como pide el profesor.
+* **Derivada Automática:** En el método de Newton, el código calcula internamente la pendiente de la tangente (derivación numérica).
+* **Teorema de Bolzano:** Se verifica automáticamente en los métodos de Bisección y Regla Falsa.
+* **Cifras Significativas:** Una vez obtenida la raíz, recordá aplicar la técnica de la línea vertical sobre el error para el redondeo final en tu hoja.
 
 ---
-Desarrollado por **Francisco Antonio Gonzalez** - Estudiante de Ingenieria de Sistemas en Informacion (UNLaR).
+Desarrollado por **Francisco Antonio Gonzalez** – Estudiante de Ingeniería de Sistemas en Información (UNLaR).
