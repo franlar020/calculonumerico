@@ -113,14 +113,25 @@ public class App {
 
     private static void imprimirTablaPuntoFijo(double xn, double tol, Metodos calc, Funcion g) {
         System.out.printf("\n%-3s | %-9s | %-9s | %-8s\n", "n", "Xn", "En", "Ern%");
+        System.out.println("----------------------------------------------");
+
         for (int n = 0; n <= 30; n++) {
             double xNext = calc.puntoFijo(xn, g);
             double err = (n == 0) ? 0 : Math.abs(xNext - xn);
             double eRel = (n == 0) ? 0 : Math.abs((err / xNext) * 100);
-            
+
             System.out.printf("%-3d | %-9.4f | %-9.4f | %-7.2f%%\n", n, xn, err, eRel);
-            
-            if (n > 0 && err < tol) break;
+
+            // Lógica de parada inteligente
+            if (n > 0) {
+                boolean paraPorPorcentaje = (tol >= 1 && eRel <= tol);
+                boolean paraPorAbsoluto = (tol < 1 && err <= tol);
+
+                if (paraPorPorcentaje || paraPorAbsoluto) {
+                    System.out.println("\nRaíz encontrada por criterio de parada.");
+                    break;
+                }
+            }
             xn = xNext;
         }
     }
@@ -141,9 +152,20 @@ public class App {
             System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-8.4f | %-8.4f | %-8.4f | %-12.4f | %-9.4f | %-7.2f%%\n", 
                               n, a, b, xn, fa, fb, fx, prod, err, eRel);
 
-            if (n > 0 && err < tol) break;
-            if (prod > 0) a = xn; else b = xn;
-            xAnt = xn;
+            // Condición de parada para Bisección/Regla Falsa
+            if (n > 0) {
+                if (tol >= 1) { // Criterio Porcentual
+                    if (eRel <= tol) {
+                        System.out.println("\nRaíz encontrada por error porcentual: " + String.format("%.4f", xn));
+                        break;
+                    }
+                } else { // Criterio Absoluto
+                    if (err <= tol) {
+                        System.out.println("\nRaíz encontrada por error absoluto: " + String.format("%.4f", xn));
+                        break;
+                    }
+                }
+            }
         }
     }
 
