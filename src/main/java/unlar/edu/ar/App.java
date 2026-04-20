@@ -20,7 +20,7 @@ public class App {
         System.out.println("->. Constante e: Usar 'e' (Ej: e^x)");
         System.out.println("->. Paréntesis: Usar para agrupar (Ej: (x+2)/(x-1))");
         System.out.println("----------------------------------------");
-        System.out.print("Ingrese la función f(x): ");
+        System.out.print("Ingrese la función f(x)\n: ");
         String formula = sc.nextLine();
         Funcion f = new FuncionDinamica(formula);
 
