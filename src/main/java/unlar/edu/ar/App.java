@@ -101,15 +101,18 @@ public class App {
 
             System.out.printf("%-3d | %-9.4f | %-9.4f | %-9.4f | %-7.2f%%\n", n, actual, fx, err, eRel);
 
-            if (n > 0 && err < tol) break;
-            
-            if (n >= 1) {
-                double proximo = calc.secante(xn, xn_1, f);
-                xn_1 = xn;
-                xn = proximo;
+            if (n > 0) {
+                if (tol >= 1) {
+                    if (eRel <= tol)
+                        break;
+                } else {
+                    if (err <= tol)
+                        break;
+                }
             }
         }
     }
+
 
     private static void imprimirTablaPuntoFijo(double xn, double tol, Metodos calc, Funcion g) {
         System.out.printf("\n%-3s | %-9s | %-9s | %-8s\n", "n", "Xn", "En", "Ern%");
