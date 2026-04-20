@@ -4,20 +4,23 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class FuncionDinamica implements Funcion {
-    private String expresionTexto;
+    private Expression e;
 
     public FuncionDinamica(String expresionTexto) {
-        this.expresionTexto = expresionTexto.toLowerCase()
-                                        .replace("sen", "sin")
-                                        .replace(",", ".");
+        // Limpiamos el texto igual que antes
+        String limpia = expresionTexto.toLowerCase()
+                                      .replace("sen", "sin")
+                                      .replace(",", ".");
+        
+        // Construimos la expresión UNA sola vez aquí
+        this.e = new ExpressionBuilder(limpia)
+                    .variable("x")
+                    .build();
     }
 
     @Override
     public double evaluar(double x) {
-        Expression e = new ExpressionBuilder(expresionTexto)
-            .variable("x")
-            .build()
-            .setVariable("x", x);
-        return e.evaluate();
+        // Solo asignamos el valor de x y evaluamos
+        return e.setVariable("x", x).evaluate();
     }
 }
