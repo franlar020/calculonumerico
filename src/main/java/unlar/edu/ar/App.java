@@ -101,41 +101,52 @@ public class App {
 
             System.out.printf("%-3d | %-9.4f | %-9.4f | %-9.4f | %-7.2f%%\n", n, actual, fx, err, eRel);
 
-            if (n > 0) {
-                if (tol >= 1) {
-                    if (eRel <= tol)
-                        break;
-                } else {
-                    if (err <= tol)
-                        break;
+            // CONTROL DE PARADA 1: Por error
+            if (n > 0 && ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))) {
+                break;
+            }
+
+            // CONTROL DE PARADA 2: Si ya encontramos la raíz exacta (Evita el NaN)
+            if (Math.abs(fx) < 1e-12) {
+                System.out.println("\nRaíz exacta encontrada.");
+                break;
+            }
+
+            if (n >= 1) {
+                double denominador = f.evaluar(xn) - f.evaluar(xn_1);
+                if (Math.abs(denominador) < 1e-12) {
+                    System.out.println("\nError: División por cero en la Secante.");
+                    break;
                 }
+                double proximo = xn - (f.evaluar(xn) * (xn - xn_1)) / denominador;
+                xn_1 = xn;
+                xn = proximo;
             }
         }
     }
-
 
     private static void imprimirTablaPuntoFijo(double xn, double tol, Metodos calc, Funcion g) {
         System.out.printf("\n%-3s | %-9s | %-9s | %-8s\n", "n", "Xn", "En", "Ern%");
         System.out.println("----------------------------------------------");
 
+        double xAnterior = xn; // Guardamos el X0 inicial
         for (int n = 0; n <= 30; n++) {
-            double xNext = calc.puntoFijo(xn, g);
-            double err = (n == 0) ? 0 : Math.abs(xNext - xn);
-            double eRel = (n == 0) ? 0 : Math.abs((err / xNext) * 100);
+            // 1. En n=0 no hay error
+            double err = (n == 0) ? 0 : Math.abs(xn - xAnterior);
+            double eRel = (n == 0) ? 0 : Math.abs((err / xn) * 100);
 
+            // 2. Imprimimos la tabla
             System.out.printf("%-3d | %-9.4f | %-9.4f | %-7.2f%%\n", n, xn, err, eRel);
 
-            // Lógica de parada inteligente
+            // 3. Verificamos condición de parada
             if (n > 0) {
-                boolean paraPorPorcentaje = (tol >= 1 && eRel <= tol);
-                boolean paraPorAbsoluto = (tol < 1 && err <= tol);
-
-                if (paraPorPorcentaje || paraPorAbsoluto) {
-                    System.out.println("\nRaíz encontrada por criterio de parada.");
+                if ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))
                     break;
-                }
             }
-            xn = xNext;
+
+            // 4. Calculamos el siguiente valor y guardamos el actual como anterior
+            xAnterior = xn;
+            xn = calc.puntoFijo(xn, g);
         }
     }
 
