@@ -55,7 +55,7 @@ public class App {
 
             case 4: // NEWTON AUTOMÁTICO
     System.out.print("Ingrese valor inicial X0: ");
-    double xInicioNewton = sc.nextDouble(); // Cambié el nombre para que no se duplique
+    double xInicioNewton = sc.nextDouble();
     imprimirTablaNewtonAuto(xInicioNewton, tol, calc, f);
     break;
 
@@ -70,7 +70,7 @@ public class App {
         }
     }
 
-    // --- MÉTODOS DE IMPRESIÓN (Asegurate de tenerlos abajo en el mismo archivo) ---
+    // --- MÉTODOS DE IMPRESIÓN DE TABLAS ---
 
     private static void imprimirTablaNewton(double xn, double tol, Metodos calc, Funcion f, Funcion fDer) {
         System.out.printf("\n%-3s | %-9s | %-9s | %-9s | %-9s | %-8s\n", "n", "Xn", "F(x)", "F'(x)", "En", "Ern%");
@@ -106,7 +106,7 @@ public class App {
                 break;
             }
 
-            // CONTROL DE PARADA 2: Si ya encontramos la raíz exacta (Evita el NaN)
+            // CONTROL DE PARADA 2: Raíz exacta
             if (Math.abs(fx) < 1e-12) {
                 System.out.println("\nRaíz exacta encontrada.");
                 break;
