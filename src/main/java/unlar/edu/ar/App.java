@@ -99,29 +99,41 @@ public class App {
         }
     }
 
-    private static void imprimirTablaSecante(double x0, double x1, double tol, Metodos calc, Funcion f) {
-        System.out.printf("\n%-3s | %-9s | %-9s | %-9s | %-7s\n", "n", "Xn", "F(x)", "En", "Ern%");
-        System.out.println("---------------------------------------------------------");
-        double xAnt = x0;
-        double xAct = x1;
-        for (int n = 0; n <= 30; n++) {
-            double fAct = f.evaluar(xAct);
-            double fAnt = f.evaluar(xAnt);
-            double err = Math.abs(xAct - xAnt);
-            double eRel = (n == 0) ? 100 : Math.abs((err / xAct) * 100);
+private static void imprimirTablaSecante(double x0, double x1, double tol, Metodos calc, Funcion f) {
+    System.out.printf("\n%-3s | %-9s | %-9s | %-9s | %-7s\n", "n", "Xn", "F(x)", "En", "Ern%");
+    System.out.println("---------------------------------------------------------");
 
-            System.out.printf("%-3d | %-9.4f | %-9.4f | %-9.4f | %-7.2f%%\n", n, xAct, fAct, err, eRel);
+    // Fila inicial del punto x0
+    System.out.printf("%-3s | %-9.4f | %-9.4f | %-9s | %-7s\n", "i", x0, f.evaluar(x0), "---", "---");
 
-            if (n > 0 && ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))) {
-                System.out.println("\nRaíz encontrada por Secante.");
-                break;
-            }
-            if (Math.abs(fAct - fAnt) < 1e-12) break;
-            double xSig = xAct - (fAct * (xAct - xAnt)) / (fAct - fAnt);
-            xAnt = xAct;
-            xAct = xSig;
+    double xAnt = x0;
+    double xAct = x1;
+
+    for (int n = 0; n <= 30; n++) {
+        double fAct = f.evaluar(xAct);
+        double fAnt = f.evaluar(xAnt);
+
+        double err = Math.abs(xAct - xAnt);
+        double eRel = (n == 0) ? 100 : Math.abs((err / xAct) * 100);
+
+        // Imprimimos la fila actual
+        System.out.printf("%-3d | %-9.4f | %-9.4f | %-9.4f | %-7.2f%%\n", n, xAct, fAct, err, eRel);
+
+        // --- 1. Lógica de parada
+        if (n > 0 && ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))) {
+            System.out.println("\nRaíz encontrada por Secante.");
+            break; 
         }
-    }
+
+        if (Math.abs(fAct - fAnt) < 1e-12) break;
+
+        double xSig = xAct - (fAct * (xAct - xAnt)) / (fAct - fAnt);
+        
+        // Actualizamos para la próxima vuelta
+        xAnt = xAct;
+        xAct = xSig;
+    } 
+}
 
     private static void imprimirTablaPuntoFijo(double xn, double tol, Metodos calc, Funcion g) {
         System.out.printf("\n%-3s | %-9s | %-9s | %-8s\n", "n", "Xn", "En", "Ern%");
