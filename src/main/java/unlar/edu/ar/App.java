@@ -31,45 +31,49 @@ public class App {
         System.out.print("Error deseado (E) [Usar punto, ej: 0.0005]: ");
         double tol = sc.nextDouble();
 
-        switch (op) {
-            case 1:
-            case 2:
-                System.out.print("Límite a: ");
-                double a = sc.nextDouble();
-                System.out.print("Límite b: ");
-                double b = sc.nextDouble();
-                if (!calc.cumpleBolzano(a, b, f)) {
-                    System.out.println("No hay cambio de signo en el intervalo.");
-                    return;
-                }
-                imprimirTablaCerrados(a, b, tol, op, calc, f);
-                break;
+        // --- AGREGÁ ESTO PARA SOLUCIONAR EL ERROR ---
+        double a = 0, b = 0; // Las declaramos aquí
+        if (op == 1 || op == 2) { // Solo si eligió Bisección o Regla Falsa
+            System.out.print("Límite a: ");
+            a = sc.nextDouble();
+            System.out.print("Límite b: ");
+            b = sc.nextDouble();
 
-            case 3: // PUNTO FIJO
-                System.out.print("Ingrese g(x): ");
-                sc.nextLine(); // Limpiar buffer
-                Funcion g = new FuncionDinamica(sc.nextLine());
-                System.out.print("Ingrese valor inicial X0: ");
-                imprimirTablaPuntoFijo(sc.nextDouble(), tol, calc, g);
-                break;
+            switch (op) {
+                case 1: // BISECCIÓN
+                    imprimirBiseccion(a, b, tol, calc, f);
+                    break;
 
-            case 4: // NEWTON AUTOMÁTICO
-    System.out.print("Ingrese valor inicial X0: ");
-    double xInicioNewton = sc.nextDouble();
-    imprimirTablaNewtonAuto(xInicioNewton, tol, calc, f);
-    break;
+                case 2: // REGLA FALSA
+                    imprimirReglaFalsa(a, b, tol, calc, f);
+                    break;
 
-            case 5: // SECANTE
-                System.out.print("Ingrese X0: ");
-                double x0 = sc.nextDouble();
-                System.out.print("Ingrese X1: ");
-                double x1 = sc.nextDouble();
-                imprimirTablaSecante(x0, x1, tol, calc, f);
-                break;
+                case 3: // PUNTO FIJO
+                    System.out.print("Ingrese g(x): ");
+                    sc.nextLine(); // Limpiar buffer
+                    Funcion g = new FuncionDinamica(sc.nextLine());
+                    System.out.print("Ingrese valor inicial X0: ");
+                    imprimirTablaPuntoFijo(sc.nextDouble(), tol, calc, g);
+                    break;
+
+                case 4: // NEWTON AUTOMÁTICO
+                    System.out.print("Ingrese valor inicial X0: ");
+                    double xInicioNewton = sc.nextDouble();
+                    imprimirTablaNewtonAuto(xInicioNewton, tol, calc, f);
+                    break;
+
+                case 5: // SECANTE
+                    System.out.print("Ingrese X0: ");
+                    double x0 = sc.nextDouble();
+                    System.out.print("Ingrese X1: ");
+                    double x1 = sc.nextDouble();
+                    imprimirTablaSecante(x0, x1, tol, calc, f);
+                    break;
+
+            }
 
         }
     }
-
     // --- MÉTODOS DE IMPRESIÓN DE TABLAS ---
 
     private static void imprimirTablaNewton(double xn, double tol, Metodos calc, Funcion f, Funcion fDer) {
@@ -150,38 +154,76 @@ public class App {
         }
     }
 
-    private static void imprimirTablaCerrados(double a, double b, double tol, int op, Metodos calc, Funcion f) {
-        System.out.printf("\n%-3s | %-7s | %-7s | %-7s | %-8s | %-8s | %-8s | %-12s | %-9s | %-7s\n", 
-                          "n", "An", "Bn", "Xn", "F(a)", "F(b)", "F(x)", "F(a)*F(x)", "E(Xn-Xn1)", "Ern%");
-        double xAnt = 0;
-        for (int n = 0; n <= 50; n++) {
-            double xn = (op == 1) ? calc.biseccion(a, b) : calc.reglaFalsa(a, b, f);
-            double fa = f.evaluar(a);
-            double fb = f.evaluar(b);
-            double fx = f.evaluar(xn);
-            double prod = fa * fx;
-            double err = (n == 0) ? 0 : Math.abs(xn - xAnt);
-            double eRel = (n == 0) ? 0 : Math.abs((err / xn) * 100);
+    private static void imprimirBiseccion(double a, double b, double tol, Metodos calc, Funcion f) {
+    System.out.printf("\n%-3s | %-7s | %-7s | %-7s | %-7s | %-7s | %-7s | %-10s | %-8s | %-7s\n", 
+                      "n", "An", "Bn", "Xn", "F(a)", "F(b)", "F(x)", "F(a)*F(x)", "E", "Ern%");
+    System.out.println("----------------------------------------------------------------------------------------------------------");
 
-            System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-8.4f | %-8.4f | %-8.4f | %-12.4f | %-9.4f | %-7.2f%%\n", 
-                              n, a, b, xn, fa, fb, fx, prod, err, eRel);
+    double xAnt = 0;
+    for (int n = 0; n <= 30; n++) {
+        double xn = (a + b) / 2; // Fórmula simple de Bisección
+        double fa = f.evaluar(a);
+        double fx = f.evaluar(xn);
+        double prod = fa * fx;
 
-            // Condición de parada para Bisección/Regla Falsa
-            if (n > 0) {
-                if (tol >= 1) { // Criterio Porcentual
-                    if (eRel <= tol) {
-                        System.out.println("\nRaíz encontrada por error porcentual: " + String.format("%.4f", xn));
-                        break;
-                    }
-                } else { // Criterio Absoluto
-                    if (err <= tol) {
-                        System.out.println("\nRaíz encontrada por error absoluto: " + String.format("%.4f", xn));
-                        break;
-                    }
-                }
-            }
+        double err = (n == 0) ? Math.abs(b - a) : Math.abs(xn - xAnt);
+        double eRel = (n == 0) ? 100 : Math.abs((err / xn) * 100);
+
+        System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-10.4f | %-8.4f | %-7.2f%%\n", 
+                          n, a, b, xn, fa, f.evaluar(b), fx, prod, err, eRel);
+
+        if (n > 0 && ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))) {
+            System.out.println("\nRaíz encontrada por Bisección.");
+            break;
         }
+
+        if (prod < 0) b = xn; else a = xn;
+        xAnt = xn;
     }
+}
+
+private static void imprimirReglaFalsa(double a, double b, double tol, Metodos calc, Funcion f) {
+    System.out.printf("\n%-3s | %-7s | %-7s | %-7s | %-7s | %-7s | %-7s | %-10s | %-8s | %-7s\n",
+            "n", "An", "Bn", "Xn", "F(a)", "F(b)", "F(x)", "F(a)*F(x)", "E", "Ern%");
+    System.out.println(
+            "----------------------------------------------------------------------------------------------------------");
+
+double xAnt = 0;
+    
+    for (int n = 0; n <= 30; n++) {
+        double fa = f.evaluar(a);
+        double fb = f.evaluar(b);
+        
+        // 1. Calculamos Xn
+        double xn = b - (fb * (b - a)) / (fb - fa); 
+        double fx = f.evaluar(xn);
+        double prod = fa * fx;
+
+        // 2. Calculamos errores
+        double err = (n == 0) ? Math.abs(b - a) : Math.abs(xn - xAnt);
+        double eRel = (n == 0) ? 100 : Math.abs((err / xn) * 100);
+
+        // 3. Imprimimos la fila (Asegúrate de que este printf esté adentro del for)
+        System.out.printf("%-3d | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-7.4f | %-10.4f | %-8.4f | %-7.2f%%\n", 
+                          n, a, b, xn, fa, fb, fx, prod, err, eRel);
+
+        // 4. Lógica de parada
+        if (n > 0 && ((tol >= 1 && eRel <= tol) || (tol < 1 && err <= tol))) {
+            System.out.println("\nRaíz encontrada por Regla Falsa.");
+            break;
+        }
+
+        // --- 5. ESTO ES LO QUE TE FALTA: ACTUALIZAR LOS LÍMITES ---
+        if (prod < 0) {
+            b = xn; // La raíz está a la izquierda, movemos el límite derecho
+        } else {
+            a = xn; // La raíz está a la derecha, movemos el límite izquierdo
+        }
+        
+        xAnt = xn; // Guardamos para la próxima vuelta
+    }
+    }
+
 
     private static void imprimirTablaNewtonAuto(double xn, double tol, Metodos calc, Funcion f) {
     // Encabezado con F'(x) aproximada
